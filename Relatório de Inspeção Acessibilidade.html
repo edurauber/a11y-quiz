@@ -8,62 +8,6 @@
     <title>Roteiro Detalhado de Inspeção de Acessibilidade</title>
 
     <script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>
-
-    <script>
-        function preencherFormularioPelaURL() {
-            const params = new URLSearchParams(window.location.search);
-            const dataParam = params.get('data');
-
-            // Se não houver o parâmetro 'data', não faz nada
-            if (!dataParam) {
-                return;
-            }
-
-            try {
-                // 1. Decodifica a string Base64 para uma string binária
-                const binaryString = atob(decodeURIComponent(dataParam));
-
-                // 2. Converte a string binária de volta para um array de bytes (Uint8Array)
-                const compressedData = new Uint8Array(binaryString.length);
-                for (let i = 0; i < binaryString.length; i++) {
-                    compressedData[i] = binaryString.charCodeAt(i);
-                }
-
-                // 3. Descomprime os dados usando pako
-                const jsonString = pako.inflate(compressedData, { to: 'string' });
-
-                // 4. Converte a string JSON de volta para um objeto
-                const dataObject = JSON.parse(jsonString);
-
-                const form = document.getElementById('inspection-form');
-
-                // 5. Preenche o formulário usando os dados do objeto
-                for (const name in dataObject) {
-                    if (Object.prototype.hasOwnProperty.call(dataObject, name)) {
-                        const value = dataObject[name];
-                        const radioInputs = form.querySelectorAll(`input[type="radio"][name="${name}"]`);
-                        const textarea = form.querySelector(`textarea[name="${name}"]`);
-
-                        if (radioInputs.length > 0) {
-                            const inputToSelect = form.querySelector(`input[type="radio"][name="${name}"][value="${value}"]`);
-                            if (inputToSelect) {
-                                inputToSelect.checked = true;
-                            }
-                        } else if (textarea) {
-                            textarea.value = value;
-                        }
-                    }
-                }
-
-                // 6. Dispara o evento de submit para gerar o relatório automaticamente
-                form.requestSubmit();
-
-            } catch (error) {
-                console.error("Erro ao tentar ler os dados do link:", error);
-                alert("Não foi possível carregar os dados do link. O link pode estar corrompido ou em um formato inválido.");
-            }
-        }
-    </script>
 </head>
 
 <body>
@@ -75,10 +19,37 @@
     </header>
 
     <main>
-        <form id="inspection-form">
+        <form id="inspection-form" novalidate>
+            <div id="error-summary" class="error-summary" role="alert" aria-live="assertive" tabindex="-1"></div>
             <p>Este roteiro está dividido em 4 seções principais. Preencha os itens de verificação para cada uma e, ao
                 final, gere um relatório consolidado.</p>
-
+            <section aria-labelledby="audit-info-title">
+                <h2 id="audit-info-title">Informações da Auditoria</h2>
+                    <p><em>Campos marcados com <span class="required-indicator" aria-hidden="true">*</span> são de preenchimento obrigatório.</em>
+                    </p>
+                    <article>
+                        <p>Preencha os dados abaixo para identificar o site ou plataforma que será avaliada.</p>
+                        <div class="form-group">
+                            <label for="site-name">Nome do Site/Plataforma<span class="required-indicator" aria-hidden="true">*</span>:</label>
+                            <input type="text" id="site-name" name="site-name" required>
+                            <div id="site-name-error" class="error-message"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="site-url">URL Principal Avaliada<span class="required-indicator" aria-hidden="true">*</span>:</label>
+                            <input type="url" id="site-url" name="site-url" placeholder="meusite.com.br" required>
+                            <div id="site-url-error" class="error-message"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="audit-scope">Escopo da Análise (Páginas/Fluxos):</label>
+                            <textarea id="audit-scope" name="audit-scope" rows="3"
+                                placeholder="Ex: Página inicial, Fluxo de login e checkout..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="auditor-name">Nome do Auditor(a):</label>
+                            <input type="text" id="auditor-name" name="auditor-name">
+                        </div>
+                    </article>
+            </section>
             <section aria-labelledby="section0-title">
                 <h2 id="section0-title">0. Título da Página</h2>
                 <article>
@@ -1178,7 +1149,7 @@
 
                         <fieldset>
                             <legend class="instruction">Quando um modal ou pop-up está ativo, o
-                                foco do teclado fica preso dentro dele (*focus trap*) e retorna ao elemento original
+                                foco do teclado fica preso dentro dele e retorna ao elemento original
                                 após o fechamento?
                                 <span class="wcag-ref">
                                     <a href="https://www.w3.org/WAI/WCAG22/Understanding/focus-order.html"
@@ -1713,6 +1684,4 @@
     <script src="./assets/JS/script.min.js"></script>
 </body>
 
-
 </html>
-
