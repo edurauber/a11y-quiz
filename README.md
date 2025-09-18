@@ -4,9 +4,7 @@ Uma ferramenta de checklist interativo para auditorias de acessibilidade web, de
 
 ## Acesso à Ferramenta
 
-➡️ **Acesse e utilize a ferramenta aqui!** `https://seu-usuario.github.io/seu-repositorio/`
-
-*(Substitua `seu-usuario` e `seu-repositorio` pelos seus dados do GitHub)*
+➡️ **Acesse e utilize a ferramenta aqui!** `link em breve!`
 
 ---
 
