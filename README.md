@@ -4,7 +4,7 @@ Uma ferramenta de checklist interativo para auditorias de acessibilidade web, de
 
 ## Acesso à Ferramenta
 
-➡️ **Acesse e utilize a ferramenta aqui!** `link em breve!`
+➡️ **Acesse e utilize a ferramenta aqui!** [Relatório de Inspeção em Acessibilidade](https://edurauber.github.io/a11y-quiz/Relat%C3%B3rio%20de%20Inspe%C3%A7%C3%A3o%20Acessibilidade.html)
 
 ---
 
