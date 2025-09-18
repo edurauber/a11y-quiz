@@ -1,0 +1,1716 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Roteiro Detalhado de Inspeção de Acessibilidade</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>
+
+    <script>
+        function preencherFormularioPelaURL() {
+            const params = new URLSearchParams(window.location.search);
+            const dataParam = params.get('data');
+
+            // Se não houver o parâmetro 'data', não faz nada
+            if (!dataParam) {
+                return;
+            }
+
+            try {
+                // 1. Decodifica a string Base64 para uma string binária
+                const binaryString = atob(decodeURIComponent(dataParam));
+
+                // 2. Converte a string binária de volta para um array de bytes (Uint8Array)
+                const compressedData = new Uint8Array(binaryString.length);
+                for (let i = 0; i < binaryString.length; i++) {
+                    compressedData[i] = binaryString.charCodeAt(i);
+                }
+
+                // 3. Descomprime os dados usando pako
+                const jsonString = pako.inflate(compressedData, { to: 'string' });
+
+                // 4. Converte a string JSON de volta para um objeto
+                const dataObject = JSON.parse(jsonString);
+
+                const form = document.getElementById('inspection-form');
+
+                // 5. Preenche o formulário usando os dados do objeto
+                for (const name in dataObject) {
+                    if (Object.prototype.hasOwnProperty.call(dataObject, name)) {
+                        const value = dataObject[name];
+                        const radioInputs = form.querySelectorAll(`input[type="radio"][name="${name}"]`);
+                        const textarea = form.querySelector(`textarea[name="${name}"]`);
+
+                        if (radioInputs.length > 0) {
+                            const inputToSelect = form.querySelector(`input[type="radio"][name="${name}"][value="${value}"]`);
+                            if (inputToSelect) {
+                                inputToSelect.checked = true;
+                            }
+                        } else if (textarea) {
+                            textarea.value = value;
+                        }
+                    }
+                }
+
+                // 6. Dispara o evento de submit para gerar o relatório automaticamente
+                form.requestSubmit();
+
+            } catch (error) {
+                console.error("Erro ao tentar ler os dados do link:", error);
+                alert("Não foi possível carregar os dados do link. O link pode estar corrompido ou em um formato inválido.");
+            }
+        }
+    </script>
+</head>
+
+<body>
+
+    <header class="page-title">
+        <h1 tabindex="-1">Roteiro Detalhado de Inspeção de Acessibilidade</h1>
+        <p>A ideia é este formulário detalhar cada ponto de verificação para uma auditoria completa
+            sob a perspectiva de um usuário de leitor de tela.</p>
+    </header>
+
+    <main>
+        <form id="inspection-form">
+            <p>Este roteiro está dividido em 4 seções principais. Preencha os itens de verificação para cada uma e, ao
+                final, gere um relatório consolidado.</p>
+
+            <section aria-labelledby="section0-title">
+                <h2 id="section0-title">0. Título da Página</h2>
+                <article>
+                    <h3>0.1 Verificação do Título</h3>
+                    <div class="verification-point" data-wcag-sc="2.4.2" data-wcag-level="A"
+                        data-wcag-name="Título da Página"
+                        data-wcag-url="https://www.w3.org/WAI/WCAG22/Understanding/page-titled.html">
+
+                        <fieldset>
+                            <legend class="instruction">A página possui título?
+
+                                <span class="wcag-ref">
+                                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/page-titled.html"
+                                        target="_blank">Entendendo o critério <abbr
+                                            title="Diretrizes de Acessibilidade para Conteúdo Web">WCAG</abbr> 2.4.2'
+                                        <span class="visually-hidden">(abre em nova aba - Em Inglês)</span>
+                                        <svg class="external-link-icon" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                            <path
+                                                d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+                                            </path>
+                                        </svg>
+                                    </a>
+                                </span>
+                            </legend>
+                            <div class="radio-group">
+                                <ul role="presentation">
+                                    <li>
+                                        <input type="radio" name="titulo-pagina" id="titulo-pagina-conf"
+                                            value="Conforme">
+                                        <label for="titulo-pagina-conf">Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" name="titulo-pagina" id="titulo-pagina-nconf"
+                                            value="Não Conforme">
+                                        <label for="titulo-pagina-nconf">Não Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" name="titulo-pagina" id="titulo-pagina-na"
+                                            value="Não se aplica">
+                                        <label for="titulo-pagina-na">Não se aplica</label>
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </fieldset>
+                    </div>
+
+                    <div class="verification-point" data-wcag-sc="2.4.2" data-wcag-level="A"
+                        data-wcag-name="Título da Página"
+                        data-wcag-url="https://www.w3.org/WAI/WCAG22/Understanding/page-titled.html">
+                        <fieldset>
+                            <legend class="instruction"> O texto do título descreve adequadamente o
+                                conteúdo da página?
+
+                                <span class="wcag-ref">
+                                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/page-titled.html"
+                                        target="_blank">Entendendo o critério 2.4.2 - Nível A
+                                        <span class="visually-hidden">(abre em nova aba - Em Inglês)</span>
+                                        <svg class="external-link-icon" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                            <path
+                                                d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+                                            </path>
+                                        </svg>
+                                    </a>
+                                </span>
+                            </legend>
+                            <div class="radio-group">
+                                <ul role="presentation">
+                                    <li><input type="radio" id="titulo-desc-conforme" name="titulo-descritivo"
+                                            value="Conforme"><label for="titulo-desc-conforme">Conforme</label></li>
+                                    <li><input type="radio" id="titulo-desc-nao-conforme" name="titulo-descritivo"
+                                            value="Não Conforme"><label for="titulo-desc-nao-conforme">Não
+                                            Conforme</label></li>
+                                    <li><input type="radio" id="titulo-desc-na" name="titulo-descritivo"
+                                            value="Não se Aplica"><label for="titulo-desc-na">Não se Aplica</label></li>
+                                </ul>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <label for="obs-titulo">Observações Gerais sobre o Título:</label>
+                    <textarea id="obs-titulo" name="obs-titulo" rows="3"></textarea>
+                </article>
+            </section>
+
+
+            <section aria-labelledby="section1-title">
+                <h2 id="section1-title">1. Estrutura e Regiões</h2>
+                <article>
+                    <h3>1.1. Regiões Principais (Landmarks)</h3>
+                    <div class="verification-point" data-wcag-sc="2.4.1" data-wcag-level="A"
+                        data-wcag-name="Contornar Blocos"
+                        data-wcag-url="https://www.w3.org/WAI/WCAG22/Understanding/bypass-blocks.html">
+
+                        <fieldset>
+                            <legend class="instruction">A página está dividida em regiões
+                                lógicas? A navegação por marco (tecla 'R' no NVDA) é funcional e coerente?
+                            </legend>
+                            <span class="wcag-ref">
+                                <a href="https://www.w3.org/WAI/WCAG22/Understanding/bypass-blocks.html"
+                                    target="_blank">Entendendo o critério 2.4.1 Nível A<span
+                                        class="visually-hidden">(abre em nova
+                                        aba - Em Inglês)</span>
+                                    <svg class="external-link-icon" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                        <path
+                                            d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+                                        </path>
+                                    </svg>
+                                </a>
+                            </span>
+                            </legend>
+                            <div class="radio-group">
+                                <ul role="presentation">
+                                    <li>
+                                        <input type="radio" id="regioes-conforme" name="resultado-regioes"
+                                            value="Conforme">
+                                        <label for="regioes-conforme">Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="regioes-nao-conforme" name="resultado-regioes"
+                                            value="Não Conforme">
+                                        <label for="regioes-nao-conforme">Não Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="regioes-na" name="resultado-regioes"
+                                            value="Não se Aplica">
+                                        <label for="regioes-na">Não se Aplica</label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <label for="obs-regioes">Observações Gerais sobre Estrutura e Regiões:</label>
+                    <textarea id="obs-regioes" name="obs-regioes" rows="3"></textarea>
+                </article>
+            </section>
+
+            <section aria-labelledby="section2-title">
+                <h2 id="section2-title">2. Semântica dos Elementos</h2>
+
+                <article>
+                    <h3>2.1. Botões</h3>
+                    <div class="verification-point" data-wcag-sc="4.1.2" data-wcag-level="A"
+                        data-wcag-name="Nome, Função e Valor"
+                        data-wcag-url="https://www.w3.org/WAI/WCAG22/Understanding/name-role-value.html">
+
+
+                        <fieldset>
+                            <legend class="instruction">Elementos que executam ações na página
+                                (sem navegar para outro local) são marcados como botões button ou
+                                role="button"?
+
+                                <span class="wcag-ref"><a
+                                        href="https://www.w3.org/WAI/WCAG22/Understanding/name-role-value.html"
+                                        target="_blank">Entendendo o critério 4.1.2 Nível A<span
+                                            class="visually-hidden">(abre em nova aba - Em Inglês)</span>
+                                        <svg class="external-link-icon" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                            <path
+                                                d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+                                            </path>
+                                        </svg>
+                                    </a> </span>
+                            </legend>
+                            <div class="radio-group">
+                                <ul role="presentation">
+                                    <li>
+                                        <input type="radio" id="btn-semantica-conforme" name="resultado-btn-semantica"
+                                            value="Conforme">
+                                        <label for="btn-semantica-conforme">Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="btn-semantica-nao-conforme"
+                                            name="resultado-btn-semantica" value="Não Conforme">
+                                        <label for="btn-semantica-nao-conforme">Não Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="btn-semantica-na" name="resultado-btn-semantica"
+                                            value="Não se Aplica">
+                                        <label for="btn-semantica-na">Não se Aplica</label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="verification-point" data-wcag-sc="2.5.3" data-wcag-level="A"
+                        data-wcag-name="Rótulo no Nome"
+                        data-wcag-url="https://www.w3.org/WAI/WCAG22/Understanding/label-in-name.html">
+
+                        <fieldset>
+                            <legend class="instruction">O botão tem um nome acessível claro que
+                                descreve a ação e o contexto (ex: "Excluir item do carrinho" em vez de apenas "Excluir")
+                                ?
+                                <span class="wcag-ref"><a
+                                        href="https://www.w3.org/WAI/WCAG22/Understanding/label-in-name.html"
+                                        target="_blank">Entendendo o critério 2.5.3 - Nível A <span
+                                            class="visually-hidden">(abre em nova aba - Em Inglês)</span>
+                                        <svg class="external-link-icon" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                            <path
+                                                d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+                                            </path>
+                                        </svg>
+                                    </a> </span>
+                            </legend>
+                            <div class="radio-group">
+                                <ul role="presentation">
+                                    <li>
+                                        <input type="radio" id="btn-nome-conforme" name="resultado-btn-nome"
+                                            value="Conforme">
+                                        <label for="btn-nome-conforme">Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="btn-nome-nao-conforme" name="resultado-btn-nome"
+                                            value="Não Conforme">
+                                        <label for="btn-nome-nao-conforme">Não Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="btn-nome-na" name="resultado-btn-nome"
+                                            value="Não se Aplica">
+                                        <label for="btn-nome-na">Não se Aplica</label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <label for="obs-botoes">Observações Gerais sobre Botões:</label>
+                    <textarea id="obs-botoes" name="obs-botoes" rows="3"></textarea>
+                </article>
+
+                <article>
+                    <h3>2.2. Listas</h3>
+                    <div class="verification-point" data-wcag-sc="1.3.1" data-wcag-level="A"
+                        data-wcag-name="Informações e Relações"
+                        data-wcag-url="https://www.w3.org/WAI/WCAG22/Understanding/info-and-relationships.html">
+
+
+
+
+                        <fieldset>
+                            <legend class="instruction">Conteúdos que se parecem com uma lista
+                                são de fato marcados como listas?
+                                <span class="wcag-ref"><a
+                                        href="https://www.w3.org/WAI/WCAG22/Understanding/info-and-relationships.html"
+                                        target="_blank">Entendendo o critério 1.3.1 - Nível A <span
+                                            class="visually-hidden">(abre em nova aba - Em Inglês)</span>
+                                        <svg class="external-link-icon" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                            <path
+                                                d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+                                            </path>
+                                        </svg>
+
+                                    </a></span>
+                            </legend>
+                            <div class="radio-group">
+                                <ul role="presentation">
+                                    <li>
+                                        <input type="radio" id="listas-conforme" name="resultado-listas"
+                                            value="Conforme">
+                                        <label for="listas-conforme">Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="listas-nao-conforme" name="resultado-listas"
+                                            value="Não Conforme">
+                                        <label for="listas-nao-conforme">Não Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="listas-na" name="resultado-listas"
+                                            value="Não se Aplica">
+                                        <label for="listas-na">Não se Aplica</label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <label for="obs-listas">Observações Gerais sobre Listas:</label>
+                    <textarea id="obs-listas" name="obs-listas" rows="3"></textarea>
+                </article>
+
+                <article>
+                    <h3>2.3. Links</h3>
+                    <div class="verification-point" data-wcag-sc="2.4.4" data-wcag-level="A"
+                        data-wcag-name="Finalidade do Link (no Contexto)"
+                        data-wcag-url="https://www.w3.org/WAI/WCAG22/Understanding/link-purpose-in-context.html">
+
+                        <fieldset>
+                            <legend class="instruction"> O texto do link é claro e faz sentido
+                                fora do contexto (evita "clique aqui", "saiba mais")?
+
+                                <span class="wcag-ref"><a
+                                        href="https://www.w3.org/WAI/WCAG22/Understanding/link-purpose-in-context.html"
+                                        target="_blank">Entendendo o critério 2.4.4 - Nível
+                                        A <span class="visually-hidden">(abre em nova aba - Em Inglês)</span>
+                                        <svg class="external-link-icon" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                            <path
+                                                d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+                                            </path>
+                                        </svg>
+                                    </a></span>
+                            </legend>
+                            <div class="radio-group">
+                                <ul role="presentation">
+                                    <li>
+                                        <input type="radio" id="link-desc-conforme" name="resultado-link-desc"
+                                            value="Conforme">
+                                        <label for="link-desc-conforme">Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="link-desc-nao-conforme" name="resultado-link-desc"
+                                            value="Não Conforme">
+                                        <label for="link-desc-nao-conforme">Não Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="link-desc-na" name="resultado-link-desc"
+                                            value="Não se Aplica"><label for="link-desc-na">Não se Aplica</label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="verification-point" data-wcag-sc="3.2.2" data-wcag-level="A" data-wcag-name="Na Entrada"
+                        data-wcag-url="https://www.w3.org/WAI/WCAG22/Understanding/on-input.html">
+
+                        <fieldset>
+                            <legend class="instruction">O usuário é informado se o link abrirá
+                                em uma nova aba ou levará a outro domínio, evitando mudanças de contexto inesperadas?
+                                <span class="wcag-ref">
+                                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/on-input.html"
+                                        target="_blank">Entendendo o critério 3.2.2 - Nível A
+                                        <span class="visually-hidden">(abre em nova aba - Em Inglês)</span>
+                                        <svg class="external-link-icon" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                            <path
+                                                d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+                                            </path>
+                                        </svg>
+                                    </a></span>
+                            </legend>
+                            <div class="radio-group">
+                                <ul role="presentation">
+                                    <li>
+                                        <input type="radio" id="link-aviso-conforme" name="resultado-link-aviso"
+                                            value="Conforme">
+                                        <label for="link-aviso-conforme">Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="link-aviso-nao-conforme" name="resultado-link-aviso"
+                                            value="Não Conforme">
+                                        <label for="link-aviso-nao-conforme">Não Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="link-aviso-na" name="resultado-link-aviso"
+                                            value="Não se Aplica">
+                                        <label for="link-aviso-na">Não se Aplica</label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <label for="obs-links">Observações Gerais sobre Links:</label>
+                    <textarea id="obs-links" name="obs-links" rows="3"></textarea>
+                </article>
+
+                <article>
+                    <h3>2.4. Imagens</h3>
+                    <div class="verification-point" data-wcag-sc="1.1.1" data-wcag-level="A"
+                        data-wcag-name="Conteúdo Não Textual"
+                        data-wcag-url="https://www.w3.org/WAI/WCAG22/Understanding/non-text-content.html">
+
+                        <fieldset>
+                            <legend class="instruction">Imagens que transmitem informação
+                                relevante possuem texto alternativo (`alt`) que descreve seu conteúdo de forma
+                                suficiente?
+                                <span class="wcag-ref">
+                                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/non-text-content.html"
+                                        target="_blank">Entendendo o critério 1.1.1 - Nível A <span
+                                            class="visually-hidden">(abre em nova aba - Em Inglês)</span>
+                                        <svg class="external-link-icon" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                            <path
+                                                d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+                                            </path>
+                                        </svg>
+                                    </a></span>
+                            </legend>
+                            <div class="radio-group">
+                                <ul role="presentation">
+                                    <li>
+                                        <input type="radio" id="img-alt-conforme" name="resultado-img-alt"
+                                            value="Conforme">
+                                        <label for="img-alt-conforme">Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="img-alt-nao-conforme" name="resultado-img-alt"
+                                            value="Não Conforme">
+                                        <label for="img-alt-nao-conforme">Não Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="img-alt-na" name="resultado-img-alt"
+                                            value="Não se Aplica">
+                                        <label for="img-alt-na">Não se Aplica</label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="verification-point" data-wcag-sc="1.1.1" data-wcag-level="A"
+                        data-wcag-name="Conteúdo Não Textual"
+                        data-wcag-url="https://www.w3.org/WAI/WCAG22/Understanding/non-text-content.html">
+
+                        <fieldset>
+                            <legend class="instruction">Imagens puramente decorativas são
+                                ignoradas pelo leitor de tela (possuem `alt=""`)?
+                                <span class="wcag-ref"><a
+                                        href="https://www.w3.org/WAI/WCAG22/Understanding/non-text-content.html"
+                                        target="_blank"> Entendendo o critério 1.1.1 - Nível A <span
+                                            class="visually-hidden">(abre em nova aba - Em Inglês)</span>
+                                        <svg class="external-link-icon" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                            <path
+                                                d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+                                            </path>
+                                        </svg>
+                                    </a></span>
+                            </legend>
+                            <div class="radio-group">
+                                <ul role="presentation">
+                                    <li>
+                                        <input type="radio" id="img-deco-conforme" name="resultado-img-deco"
+                                            value="Conforme">
+                                        <label for="img-deco-conforme">Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="img-deco-nao-conforme" name="resultado-img-deco"
+                                            value="Não Conforme">
+                                        <label for="img-deco-nao-conforme">Não Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="img-deco-na" name="resultado-img-deco"
+                                            value="Não se Aplica">
+                                        <label for="img-deco-na">Não se Aplica</label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="verification-point" data-wcag-sc="1.1.1" data-wcag-level="A"
+                        data-wcag-name="Conteúdo Não Textual"
+                        data-wcag-url="https://www.w3.org/WAI/WCAG22/Understanding/non-text-content.html">
+
+                        <fieldset>
+                            <legend class="instruction">Para imagens complexas (gráficos, mapas), existe um mecanismo
+                                acessível (como um link adjacente) que leva a uma descrição textual
+                                longa?
+
+                                <span class="wcag-ref">
+                                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/non-text-content.html"
+                                        target="_blank">Entendendo o critério 1.1.1 - Nível
+                                        A <span class="visually-hidden">(abre em nova aba - Em Inglês)</span>
+                                        <svg class="external-link-icon" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                            <path
+                                                d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+                                            </path>
+                                        </svg>
+                                    </a></span>
+                            </legend>
+                            <div class="radio-group">
+                                <ul role="presentation">
+                                    <li>
+                                        <input type="radio" id="img-complex-conforme" name="resultado-img-complex"
+                                            value="Conforme">
+                                        <label for="img-complex-conforme">Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="img-complex-nao-conforme" name="resultado-img-complex"
+                                            value="Não Conforme">
+                                        <label for="img-complex-nao-conforme">Não
+                                            Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="img-complex-na" name="resultado-img-complex"
+                                            value="Não se Aplica">
+                                        <label for="img-complex-na">Não se Aplica</label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <label for="obs-imagens">Observações Gerais sobre Imagens:</label>
+                    <textarea id="obs-imagens" name="obs-imagens" rows="3"></textarea>
+                </article>
+
+                <article>
+                    <h3>2.5. Cabeçalhos</h3>
+                    <div class="verification-point" data-wcag-sc="1.3.1" data-wcag-level="A"
+                        data-wcag-name="Informações e Relações"
+                        data-wcag-url="https://www.w3.org/WAI/WCAG22/Understanding/info-and-relationships.html">
+
+                        <fieldset>
+                            <legend class="instruction">Existe apenas um `h1` descritivo por página?
+
+                                <span class="wcag-ref">
+                                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/info-and-relationships.html"
+                                        target="_blank">Entendendo o critério 1.3.1 - Nível
+                                        A <span class="visually-hidden">(abre em nova aba - Em Inglês)</span>
+                                        <svg class="external-link-icon" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                            <path
+                                                d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+                                            </path>
+                                        </svg>
+
+                                    </a></span>
+                            </legend>
+                            <div class="radio-group">
+                                <ul role="presentation">
+                                    <li>
+                                        <input type="radio" id="h1-conforme" name="resultado-h1" value="Conforme"><label
+                                            for="h1-conforme">Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="h1-nao-conforme" name="resultado-h1"
+                                            value="Não Conforme">
+                                        <label for="h1-nao-conforme">Não Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="h1-na" name="resultado-h1" value="Não se Aplica">
+                                        <label for="h1-na">Não se Aplica</label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="verification-point" data-wcag-sc="2.4.6" data-wcag-level="AA"
+                        data-wcag-name="Títulos e Rótulos"
+                        data-wcag-url="https://www.w3.org/WAI/WCAG22/Understanding/headings-and-labels.html">
+
+                        <fieldset>
+                            <legend class="instruction">A hierarquia dos cabeçalhos (h2, h3,
+                                h4...) é lógica e não pula níveis (ex: de um h2 para um h4)?
+
+                                <span class="wcag-ref">
+                                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/headings-and-labels.html"
+                                        target="_blank">Entendendo o critério 2.4.6 - Nível AA <span
+                                            class="visually-hidden">(abre em nova aba - Em Inglês)</span>
+                                        <svg class="external-link-icon" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                            <path
+                                                d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+                                            </path>
+                                        </svg>
+
+                                    </a></span>
+                            </legend>
+                            <div class="radio-group">
+                                <ul role="presentation">
+                                    <li>
+                                        <input type="radio" id="h-ordem-conforme" name="resultado-h-ordem"
+                                            value="Conforme">
+                                        <label for="h-ordem-conforme">Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="h-ordem-nao-conforme" name="resultado-h-ordem"
+                                            value="Não Conforme">
+                                        <label for="h-ordem-nao-conforme">Não Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="h-ordem-na" name="resultado-h-ordem"
+                                            value="Não se Aplica">
+                                        <label for="h-ordem-na">Não se Aplica</label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <label for="obs-cabecalhos">Observações Gerais sobre Cabeçalhos:</label>
+                    <textarea id="obs-cabecalhos" name="obs-cabecalhos" rows="3"></textarea>
+                </article>
+
+                <article>
+                    <h3>2.6. Idioma</h3>
+                    <div class="verification-point" data-wcag-sc="3.1.1" data-wcag-level="A"
+                        data-wcag-name="Idioma da Página"
+                        data-wcag-url="https://www.w3.org/WAI/WCAG22/Understanding/language-of-page.html">
+
+                        <fieldset>
+                            <legend class="instruction"> O idioma principal da página está
+                                declarado no HTML (ex: html lang="pt-BR")?
+                                <span class="wcag-ref">
+                                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/language-of-page.html"
+                                        target="_blank">Entendendo o critério 3.1.1 - Nível
+                                        A <span class="visually-hidden">(abre em nova aba - Em Inglês)</span>
+                                        <svg class="external-link-icon" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                            <path
+                                                d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+                                            </path>
+                                        </svg>
+
+                                    </a></span>
+                            </legend>
+                            <div class="radio-group">
+                                <ul role="presentation">
+                                    <li>
+                                        <input type="radio" id="lang-main-conforme" name="resultado-lang-main"
+                                            value="Conforme">
+                                        <label for="lang-main-conforme">Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="lang-main-nao-conforme" name="resultado-lang-main"
+                                            value="Não Conforme">
+                                        <label for="lang-main-nao-conforme">Não Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="lang-main-na" name="resultado-lang-main"
+                                            value="Não se Aplica">
+                                        <label for="lang-main-na">Não se Aplica</label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="verification-point" data-wcag-sc="3.1.2" data-wcag-level="AA"
+                        data-wcag-name="Idioma da Parte"
+                        data-wcag-url="https://www.w3.org/WAI/WCAG22/Understanding/language-of-parts.html">
+
+                        <fieldset>
+                            <legend class="instruction">Palavras ou trechos em idioma
+                                estrangeiro possuem o atributo `lang` para garantir a pronúncia correta?</p>
+
+                                <span class="wcag-ref">
+                                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/language-of-parts.html"
+                                        target="_blank">Entendendo o critério 3.1.2 - Nível
+                                        AA <span class="visually-hidden">(abre em nova aba - Em Inglês)</span>
+                                        <svg class="external-link-icon" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                            <path
+                                                d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+                                            </path>
+                                        </svg>
+
+                                    </a></span>
+                            </legend>
+                            <div class="radio-group">
+                                <ul role="presentation">
+                                    <li>
+                                        <input type="radio" id="lang-part-conforme" name="resultado-lang-part"
+                                            value="Conforme">
+                                        <label for="lang-part-conforme">Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="lang-part-nao-conforme" name="resultado-lang-part"
+                                            value="Não Conforme">
+                                        <label for="lang-part-nao-conforme">Não Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="lang-part-na" name="resultado-lang-part"
+                                            value="Não se Aplica">
+                                        <label for="lang-part-na">Não se Aplica</label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <label for="obs-idioma">Observações Gerais sobre Idioma:</label>
+                    <textarea id="obs-idioma" name="obs-idioma" rows="3"></textarea>
+                </article>
+
+                <article>
+                    <h3>2.7. Formulários</h3>
+                    <div class="verification-point" data-wcag-sc="3.3.2" data-wcag-level="A"
+                        data-wcag-name="Rótulos ou Instruções"
+                        data-wcag-url="https://www.w3.org/WAI/WCAG22/Understanding/labels-or-instructions.html">
+
+                        <fieldset>
+                            <legend class="instruction">Todo campo de formulário (`input`,
+                                `textarea`, `select`) possui uma `label` associada a ele?
+
+                                <span class="wcag-ref">
+                                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/labels-or-instructions.html"
+                                        target="_blank">Entendendo o critério 3.3.2 - Nível
+                                        A <span class="visually-hidden">(abre em nova aba - Em Inglês)</span>
+                                        <svg class="external-link-icon" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                            <path
+                                                d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+                                            </path>
+                                        </svg>
+
+                                    </a></span>
+                            </legend>
+                            <div class="radio-group">
+                                <ul role="presentation">
+                                    <li>
+                                        <input type="radio" id="form-label-conforme" name="resultado-form-label"
+                                            value="Conforme">
+                                        <label for="form-label-conforme">Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="form-label-nao-conforme" name="resultado-form-label"
+                                            value="Não Conforme">
+                                        <label for="form-label-nao-conforme">Não Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="form-label-na" name="resultado-form-label"
+                                            value="Não se Aplica"><label for="form-label-na">Não se Aplica</label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="verification-point" data-wcag-sc="3.3.2" data-wcag-level="A"
+                        data-wcag-name="Rótulos ou Instruções"
+                        data-wcag-url="https://www.w3.org/WAI/WCAG22/Understanding/labels-or-instructions.html">
+
+                        <fieldset>
+                            <legend class="instruction">As instruções são claras? Campos
+                                obrigatórios são identificados de forma não-visual (ex: com "(obrigatório)")?
+
+                                <span class="wcag-ref">
+                                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/labels-or-instructions.html"
+                                        target="_blank">Entendendo o critério 3.3.2 - Nível A
+                                        <span class="visually-hidden">(abre em nova aba - Em Inglês)</span>
+                                        <svg class="external-link-icon" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                            <path
+                                                d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+                                            </path>
+                                        </svg>
+
+                                    </a></span>
+                            </legend>
+                            <div class="radio-group">
+                                <ul role="presentation">
+                                    <li>
+                                        <input type="radio" id="form-inst-conforme" name="resultado-form-inst"
+                                            value="Conforme">
+                                        <label for="form-inst-conforme">Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="form-inst-nao-conforme" name="resultado-form-inst"
+                                            value="Não Conforme">
+                                        <label for="form-inst-nao-conforme">Não Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="form-inst-na" name="resultado-form-inst"
+                                            value="Não se Aplica">
+                                        <label for="form-inst-na">Não se Aplica</label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="verification-point" data-wcag-sc="3.3.1" data-wcag-level="A"
+                        data-wcag-name="Identificação do Erro"
+                        data-wcag-url="https://www.w3.org/WAI/WCAG22/Understanding/error-identification.html">
+
+                        <fieldset>
+                            <legend class="instruction">O feedback de erro é claro, informa
+                                qual campo está errado, o motivo do erro e o foco é levado para o erro?
+                                <span class="wcag-ref">
+                                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/error-identification.html"
+                                        target="_blank">Entendendo o critério 3.3.1 - Nível A <span
+                                            class="visually-hidden">(abre em nova aba - Em Inglês)</span>
+                                        <svg class="external-link-icon" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                            <path
+                                                d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+                                            </path>
+                                        </svg>
+
+                                    </a></span>
+                            </legend>
+                            <div class="radio-group">
+                                <ul role="presentation">
+                                    <li>
+                                        <input type="radio" id="form-erro-conforme" name="resultado-form-erro"
+                                            value="Conforme">
+                                        <label for="form-erro-conforme">Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="form-erro-nao-conforme" name="resultado-form-erro"
+                                            value="Não Conforme">
+                                        <label for="form-erro-nao-conforme">Não Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="form-erro-na" name="resultado-form-erro"
+                                            value="Não se Aplica">
+                                        <label for="form-erro-na">Não se Aplica</label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="verification-point" data-wcag-sc="1.3.5" data-wcag-level="AA"
+                        data-wcag-name="Identificar a Finalidade da Entrada"
+                        data-wcag-url="https://www.w3.org/WAI/WCAG22/Understanding/identify-input-purpose.html">
+
+                        <fieldset>
+                            <legend class="instruction">Campos que pedem informações do usuário
+                                (nome, email, etc.) utilizam `autocomplete` para facilitar o preenchimento?
+
+                                <span class="wcag-ref">
+                                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/identify-input-purpose.html"
+                                        target="_blank"> Entendendo o critério 1.3.5 - Nível
+                                        AA <span class="visually-hidden">(abre em nova aba - Em Inglês)</span>
+                                        <svg class="external-link-icon" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                            <path
+                                                d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+                                            </path>
+                                        </svg>
+
+                                    </a></span>
+                            </legend>
+                            <div class="radio-group">
+                                <ul role="presentation">
+                                    <li>
+                                        <input type="radio" id="form-auto-conforme" name="resultado-form-auto"
+                                            value="Conforme">
+                                        <label for="form-auto-conforme">Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="form-auto-nao-conforme" name="resultado-form-auto"
+                                            value="Não Conforme">
+                                        <label for="form-auto-nao-conforme">Não Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="form-auto-na" name="resultado-form-auto"
+                                            value="Não se Aplica">
+                                        <label for="form-auto-na">Não se Aplica</label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <label for="obs-forms">Observações Gerais sobre Formulários:</label>
+                    <textarea id="obs-forms" name="obs-forms" rows="3"></textarea>
+                </article>
+
+                <article>
+                    <h3>2.8. Tabelas</h3>
+                    <div class="verification-point" data-wcag-sc="1.3.1" data-wcag-level="A"
+                        data-wcag-name="Informações e Relações"
+                        data-wcag-url="https://www.w3.org/WAI/WCAG22/Understanding/info-and-relationships.html">
+
+                        <fieldset>
+                            <legend class="instruction"> As tabelas são usadas apenas para dados
+                                tabulares e não para layout?
+
+                                <span class="wcag-ref">
+                                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/info-and-relationships.html"
+                                        target="_blank">Entendendo o critério 1.3.1 - Nível
+                                        A <span class="visually-hidden">(abre em nova aba - Em Inglês)</span>
+                                        <svg class="external-link-icon" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                            <path
+                                                d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+                                            </path>
+                                        </svg>
+
+                                    </a></span>
+                            </legend>
+                            <div class="radio-group">
+                                <ul role="presentation">
+                                    <li>
+                                        <input type="radio" id="tab-uso-conforme" name="resultado-tab-uso"
+                                            value="Conforme">
+                                        <label for="tab-uso-conforme">Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="tab-uso-nao-conforme" name="resultado-tab-uso"
+                                            value="Não Conforme">
+                                        <label for="tab-uso-nao-conforme">Não Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="tab-uso-na" name="resultado-tab-uso"
+                                            value="Não se Aplica">
+                                        <label for="tab-uso-na">Não se Aplica</label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="verification-point" data-wcag-sc="1.3.1" data-wcag-level="A"
+                        data-wcag-name="Informações e Relações"
+                        data-wcag-url="https://www.w3.org/WAI/WCAG22/Understanding/info-and-relationships.html">
+
+                        <fieldset>
+                            <legend class="instruction">As tabelas de dados possuem cabeçalhos
+                                devidamente associados às suas colunas ou linhas?
+
+                                <span class="wcag-ref">
+                                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/info-and-relationships.html"
+                                        target="_blank">Entendendo o critério 1.3.1 - Nível
+                                        A <span class="visually-hidden">(abre em nova aba - Em Inglês)</span>
+                                        <svg class="external-link-icon" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                            <path
+                                                d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+                                            </path>
+                                        </svg>
+
+                                    </a></span>
+                            </legend>
+                            <div class="radio-group">
+                                <ul role="presentation">
+                                    <li>
+                                        <input type="radio" id="tab-th-conforme" name="resultado-tab-th"
+                                            value="Conforme">
+                                        <label for="tab-th-conforme">Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="tab-th-nao-conforme" name="resultado-tab-th"
+                                            value="Não Conforme">
+                                        <label for="tab-th-nao-conforme">Não Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="tab-th-na" name="resultado-tab-th"
+                                            value="Não se Aplica"><label for="tab-th-na">Não se Aplica</label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <label for="obs-tabelas">Observações Gerais sobre Tabelas:</label>
+                    <textarea id="obs-tabelas" name="obs-tabelas" rows="3"></textarea>
+                </article>
+
+            </section>
+
+            <section aria-labelledby="section3-title">
+                <h2 id="section3-title">3. Interação e Navegação</h2>
+                <article>
+                    <h3>3.1. Ordem de Navegação (Tab-order) e Foco</h3>
+                    <div class="verification-point" data-wcag-sc="2.4.3" data-wcag-level="A"
+                        data-wcag-name="Ordem do Foco"
+                        data-wcag-url="https://www.w3.org/WAI/WCAG22/Understanding/focus-order.html">
+
+                        <fieldset>
+                            <legend class="instruction">A ação de mover o foco para um componente (sem clicar) causa
+                                alguma mudança inesperada de contexto (ex: recarrega a página ou move o foco para outro
+                                lugar)?
+                                <span class="wcag-ref">
+                                    <a href="https://www.w3.org/WAI/WCAG21/Understanding/on-focus.html"
+                                        target="_blank">Entendendo o critério 3.2.1 - Nível
+                                        A <span class="visually-hidden">(abre em nova aba - Em Inglês)</span>
+                                        <svg class="external-link-icon" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                            <path
+                                                d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+                                            </path>
+                                        </svg>
+
+                                    </a></span>
+                            </legend>
+                            <div class="radio-group">
+                                <ul role="presentation">
+                                    <li>
+                                        <input type="radio" id="tab-ordem-conforme" name="resultado-tab-ordem"
+                                            value="Conforme">
+                                        <label for="tab-ordem-conforme">Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="tab-ordem-nao-conforme" name="resultado-tab-ordem"
+                                            value="Não Conforme">
+                                        <label for="tab-ordem-nao-conforme">Não Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="tab-ordem-na" name="resultado-tab-ordem"
+                                            value="Não se Aplica">
+                                        <label for="tab-ordem-na">Não se Aplica</label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="verification-point" data-wcag-sc="2.4.7" data-wcag-level="AA"
+                        data-wcag-name="Foco Visível"
+                        data-wcag-url="https://www.w3.org/WAI/WCAG22/Understanding/focus-visible.html">
+
+                        <fieldset>
+                            <legend class="instruction">A navegação por foco é funcional e previsível? (A qualidade
+                                visual do indicador de foco deve ser validada em um teste de contraste separado)".
+
+                                <span class="wcag-ref">
+                                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/focus-visible.html"
+                                        target="_blank">Entendendo o critério 2.4.7 - Nível
+                                        AA <span class="visually-hidden">(abre em nova aba - Em Inglês)</span>
+                                        <svg class="external-link-icon" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                            <path
+                                                d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+                                            </path>
+                                        </svg>
+
+                                    </a></span>
+                            </legend>
+                            <div class="radio-group">
+                                <ul role="presentation">
+                                    <li>
+                                        <input type="radio" id="foco-conforme" name="resultado-foco" value="Conforme">
+                                        <label for="foco-conforme">Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="foco-nao-conforme" name="resultado-foco"
+                                            value="Não Conforme">
+                                        <label for="foco-nao-conforme">Não Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="foco-na" name="resultado-foco" value="Não se Aplica">
+                                        <label for="foco-na">Não se Aplica</label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <label for="obs-foco">Observações Gerais sobre Navegação e Foco:</label>
+                    <textarea id="obs-foco" name="obs-foco" rows="3"></textarea>
+                </article>
+                <article>
+                    <h3>3.2. Conteúdos Dinâmicos (Modais, Pop-ups, Alertas)</h3>
+                    <div class="verification-point" data-wcag-sc="4.1.3" data-wcag-level="AA"
+                        data-wcag-name="Mensagens de Status"
+                        data-wcag-url="https://www.w3.org/WAI/WCAG22/Understanding/status-messages.html">
+
+                        <fieldset>
+                            <legend class="instruction">O usuário é notificado sobre a mudança
+                                de contexto (abertura de um modal, mensagem de status) via `aria-live` ou similar?
+                                <span class="wcag-ref">
+                                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/status-messages.html"
+                                        target="_blank">Entendendo o critério 4.1.3 - Nível
+                                        AA <span class="visually-hidden">(abre em nova aba - Em Inglês)</span>
+                                        <svg class="external-link-icon" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                            <path
+                                                d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+                                            </path>
+                                        </svg>
+
+                                    </a></span>
+                            </legend>
+                            <div class="radio-group">
+                                <ul role="presentation">
+                                    <li>
+                                        <input type="radio" id="dyn-notif-conforme" name="resultado-dyn-notif"
+                                            value="Conforme">
+                                        <label for="dyn-notif-conforme">Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="dyn-notif-nao-conforme" name="resultado-dyn-notif"
+                                            value="Não Conforme">
+                                        <label for="dyn-notif-nao-conforme">Não Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="dyn-notif-na" name="resultado-dyn-notif"
+                                            value="Não se Aplica">
+                                        <label for="dyn-notif-na">Não se Aplica</label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="verification-point" data-wcag-sc="2.4.3" data-wcag-level="A"
+                        data-wcag-name="Ordem do Foco"
+                        data-wcag-url="https://www.w3.org/WAI/WCAG22/Understanding/focus-order.html">
+
+
+                        <fieldset>
+                            <legend class="instruction">Quando um modal ou pop-up está ativo, o
+                                foco do teclado fica preso dentro dele (*focus trap*) e retorna ao elemento original
+                                após o fechamento?
+                                <span class="wcag-ref">
+                                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/focus-order.html"
+                                        target="_blank"> Entendendo o critério 2.4.3 - Nível
+                                        A <span class="visually-hidden">(abre em nova aba - Em Inglês)</span>
+                                        <svg class="external-link-icon" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                            <path
+                                                d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+                                            </path>
+                                        </svg>
+
+                                    </a></span>
+                            </legend>
+                            <div class="radio-group">
+                                <ul role="presentation">
+                                    <li>
+                                        <input type="radio" id="dyn-foco-conforme" name="resultado-dyn-foco"
+                                            value="Conforme">
+                                        <label for="dyn-foco-conforme">Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="dyn-foco-nao-conforme" name="resultado-dyn-foco"
+                                            value="Não Conforme">
+                                        <label for="dyn-foco-nao-conforme">Não Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="dyn-foco-na" name="resultado-dyn-foco"
+                                            value="Não se Aplica">
+                                        <label for="dyn-foco-na">Não se Aplica</label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="verification-point" data-wcag-sc="2.1.2" data-wcag-level="A"
+                        data-wcag-name="Nenhuma Armadilha de Teclado"
+                        data-wcag-url="https://www.w3.org/WAI/WCAG22/Understanding/no-keyboard-trap.html">
+
+                        <fieldset>
+                            <legend class="instruction">É possível fechar o conteúdo dinâmico
+                                de forma fácil e intuitiva (ex: com a tecla `Esc` ou um botão de fechar acessível)?
+
+                                <span class="wcag-ref">
+                                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/no-keyboard-trap.html"
+                                        target="_blank">Entendendo o critério 2.1.2 - Nível
+                                        A <span class="visually-hidden">(abre em nova aba - Em Inglês)</span>
+                                        <svg class="external-link-icon" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                            <path
+                                                d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+                                            </path>
+                                        </svg>
+
+                                    </a></span>
+                            </legend>
+                            <div class="radio-group">
+                                <ul role="presentation">
+                                    <li>
+                                        <input type="radio" id="dyn-disp-conforme" name="resultado-dyn-disp"
+                                            value="Conforme">
+                                        <label for="dyn-disp-conforme">Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="dyn-disp-nao-conforme" name="resultado-dyn-disp"
+                                            value="Não Conforme">
+                                        <label for="dyn-disp-nao-conforme">Não Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="dyn-disp-na" name="resultado-dyn-disp"
+                                            value="Não se Aplica">
+                                        <label for="dyn-disp-na">Não se Aplica</label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <label for="obs-dinamico">Observações Gerais sobre Conteúdo Dinâmico:</label>
+                    <textarea id="obs-dinamico" name="obs-dinamico" rows="3"></textarea>
+                </article>
+
+                <article>
+                    <h3>3.3. Áudio e Vídeo</h3>
+                    <div class="verification-point" data-wcag-sc="1.2.5" data-wcag-level="AA"
+                        data-wcag-name="Audiodescrição (Pré-gravado)"
+                        data-wcag-url="https://www.w3.org/WAI/WCAG22/Understanding/audio-description-prerecorded.html">
+
+                        <fieldset>
+                            <legend class="instruction">Vídeos possuem legendas sincronizadas e
+                                audiodescrição para o conteúdo visual?
+
+                                <span class="wcag-ref">
+                                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/audio-description-prerecorded.html"
+                                        target="_blank">Entendendo o critério 1.2.5 - Nível
+                                        AA <span class="visually-hidden">(abre em nova aba - Em Inglês)</span>
+                                        <svg class="external-link-icon" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                            <path
+                                                d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+                                            </path>
+                                        </svg>
+
+                                    </a></span>
+                            </legend>
+                            <div class="radio-group">
+                                <ul role="presentation">
+                                    <li>
+                                        <input type="radio" id="midia-leg-conforme" name="resultado-midia-leg"
+                                            value="Conforme">
+                                        <label for="midia-leg-conforme">Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="midia-leg-nao-conforme" name="resultado-midia-leg"
+                                            value="Não Conforme">
+                                        <label for="midia-leg-nao-conforme">Não Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="midia-leg-na" name="resultado-midia-leg"
+                                            value="Não se Aplica">
+                                        <label for="midia-leg-na">Não se Aplica</label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="verification-point" data-wcag-sc="1.2.1" data-wcag-level="A"
+                        data-wcag-name="Apenas Áudio e Apenas Vídeo (Pré-gravado)"
+                        data-wcag-url="https://www.w3.org/WAI/WCAG22/Understanding/audio-only-and-video-only-prerecorded.html">
+
+                        <fieldset>
+                            <legend class="instruction">Todo conteúdo de áudio ou vídeo possui
+                                uma transcrição textual completa e acessível?
+
+                                <span class="wcag-ref">
+                                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/audio-only-and-video-only-prerecorded.html"
+                                        target="_blank">Entendendo o critério 1.2.1 - Nível
+                                        A <span class="visually-hidden">(abre em nova aba - Em Inglês)</span>
+                                        <svg class="external-link-icon" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                            <path
+                                                d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+                                            </path>
+                                        </svg>
+
+                                    </a></span>
+                            </legend>
+                            <div class="radio-group">
+                                <ul role="presentation">
+                                    <li>
+                                        <input type="radio" id="midia-transc-conforme" name="resultado-midia-transc"
+                                            value="Conforme">
+                                        <label for="midia-transc-conforme">Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="midia-transc-nao-conforme" name="resultado-midia-transc"
+                                            value="Não Conforme">
+                                        <label for="midia-transc-nao-conforme">Não Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="midia-transc-na" name="resultado-midia-transc"
+                                            value="Não se Aplica">
+                                        <label for="midia-transc-na">Não se Aplica</label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <label for="obs-midia">Observações Gerais sobre Mídia:</label>
+                    <textarea id="obs-midia" name="obs-midia" rows="3"></textarea>
+                </article>
+
+                <article>
+                    <h3>3.4. Consistência</h3>
+                    <div class="verification-point" data-wcag-sc="3.2.4" data-wcag-level="AA"
+                        data-wcag-name="Identificação Consistente"
+                        data-wcag-url="https://www.w3.org/WAI/WCAG22/Understanding/consistent-identification.html">
+
+                        <fieldset>
+                            <legend class="instruction">Elementos com a mesma função (ex: ícone
+                                de busca, link para o carrinho) são identificados da mesma forma em todas as páginas?
+                                <span class="wcag-ref">
+                                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/consistent-identification.html"
+                                        target="_blank">Entendendo o critério 3.2.4 - Nível
+                                        AA <span class="visually-hidden">(abre em nova aba - Em Inglês)</span>
+                                        <svg class="external-link-icon" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                            <path
+                                                d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+                                            </path>
+                                        </svg>
+
+                                    </a></span>
+                            </legend>
+                            <div class="radio-group">
+                                <ul role="presentation">
+                                    <li>
+                                        <input type="radio" id="consist-id-conforme" name="resultado-consist-id"
+                                            value="Conforme">
+                                        <label for="consist-id-conforme">Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="consist-id-nao-conforme" name="resultado-consist-id"
+                                            value="Não Conforme">
+                                        <label for="consist-id-nao-conforme">Não Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="consist-id-na" name="resultado-consist-id"
+                                            value="Não se Aplica">
+                                        <label for="consist-id-na">Não se Aplica</label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="verification-point" data-wcag-sc="3.2.3" data-wcag-level="AA"
+                        data-wcag-name="Navegação Consistente"
+                        data-wcag-url="https://www.w3.org/WAI/WCAG22/Understanding/consistent-navigation.html">
+
+                        <fieldset>
+                            <legend class="instruction">A localização de elementos repetidos
+                                (menu principal, link de ajuda, campo de busca) é a mesma em todo o site?
+
+                                <span class="wcag-ref">
+                                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/consistent-navigation.html"
+                                        target="_blank">Entendendo o critério 3.2.3 - Nível
+                                        AA <span class="visually-hidden">(abre em nova aba - Em Inglês)</span>
+                                        <svg class="external-link-icon" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                            <path
+                                                d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+                                            </path>
+                                        </svg>
+
+                                    </a></span>
+                            </legend>
+                            <div class="radio-group">
+                                <ul role="presentation">
+                                    <li>
+                                        <input type="radio" id="consist-loc-conforme" name="resultado-consist-loc"
+                                            value="Conforme">
+                                        <label for="consist-loc-conforme">Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="consist-loc-nao-conforme" name="resultado-consist-loc"
+                                            value="Não Conforme">
+                                        <label for="consist-loc-nao-conforme">Não Conforme</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="consist-loc-na" name="resultado-consist-loc"
+                                            value="Não se Aplica">
+                                        <label for="consist-loc-na">Não se Aplica</label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <label for="obs-consistencia">Observações Gerais sobre Consistência:</label>
+                    <textarea id="obs-consistencia" name="obs-consistencia" rows="3"></textarea>
+                </article>
+            </section>
+
+            <section aria-labelledby="section4-title">
+                <h2 id="section4-title">4. Critérios Adicionais</h2>
+                <article>
+                    <h3>4.1. Atalhos de Teclado</h3>
+                    <div class="verification-point" data-wcag-sc="2.1.4" data-wcag-level="A"
+                        data-wcag-name="Atalhos por Caractere Único"
+                        data-wcag-url="https://www.w3.org/WAI/WCAG22/Understanding/character-key-shortcuts.html">
+                        <fieldset>
+                            <legend>Existem atalhos de teclado? Se sim, eles não conflitam com leitores de tela?
+                                <span class="wcag-ref">
+                                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/character-key-shortcuts.html"
+                                        target="_blank">Entendendo o critério 2.1.4 - Nível
+                                        A <span class="visually-hidden">(abre em nova aba - Em Inglês)</span>
+                                        <svg class="external-link-icon" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                            <path
+                                                d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+                                            </path>
+                                        </svg>
+                                    </a></span>
+                            </legend>
+                            <div class="radio-group">
+                                <ul role="presentation">
+                                    <li><input type="radio" id="atalhos-conforme" name="atalhos-teclado"
+                                            value="Conforme"><label for="atalhos-conforme">Conforme</label></li>
+                                    <li><input type="radio" id="atalhos-nao-conforme" name="atalhos-teclado"
+                                            value="Não Conforme"><label for="atalhos-nao-conforme">Não Conforme</label>
+                                    </li>
+                                    <li><input type="radio" id="atalhos-na" name="atalhos-teclado"
+                                            value="Não se Aplica"><label for="atalhos-na">Não se Aplica</label></li>
+                                </ul>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <label for="obs-atalhos">Observações (opcional):</label>
+                    <textarea id="obs-atalhos" name="obs-atalhos" rows="3"></textarea>
+                </article>
+                <article>
+                    <h3>4.2. Sequência de Leitura</h3>
+                    <div class="verification-point" data-wcag-sc="1.3.2" data-wcag-level="A"
+                        data-wcag-name="Sequência Significativa"
+                        data-wcag-url="https://www.w3.org/WAI/WCAG22/Understanding/meaningful-sequence.html">
+                        <fieldset>
+                            <legend>A ordem de leitura pelo leitor de tela corresponde à ordem lógica/visual?
+                                <span class="wcag-ref">
+                                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/meaningful-sequence.html"
+                                        target="_blank">Entendendo o critério 1.3.2 - Nível
+                                        A <span class="visually-hidden">(abre em nova aba - Em Inglês)</span>
+                                        <svg class="external-link-icon" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                            <path
+                                                d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+                                            </path>
+                                        </svg>
+
+                                    </a></span>
+                            </legend>
+                            <div class="radio-group">
+                                <ul role="presentation">
+                                    <li><input type="radio" id="sequencia-conforme" name="sequencia-leitura"
+                                            value="Conforme"><label for="sequencia-conforme">Conforme</label></li>
+                                    <li><input type="radio" id="sequencia-nao-conforme" name="sequencia-leitura"
+                                            value="Não Conforme"><label for="sequencia-nao-conforme">Não
+                                            Conforme</label>
+                                    </li>
+                                    <li><input type="radio" id="sequencia-na" name="sequencia-leitura"
+                                            value="Não se Aplica"><label for="sequencia-na">Não se Aplica</label></li>
+                                </ul>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <label for="obs-sequencia">Observações (opcional):</label>
+                    <textarea id="obs-sequencia" name="obs-sequencia" rows="3"></textarea>
+                </article>
+                <article>
+                    <h3>4.3. Mudanças de Contexto</h3>
+                    <div class="verification-point" data-wcag-sc="3.2.1" data-wcag-level="A"
+                        data-wcag-name="Ao Receber Foco"
+                        data-wcag-url="https://www.w3.org/WAI/WCAG22/Understanding/on-focus.html">
+                        <fieldset>
+                            <legend>Algum clique causa mudança de página inesperada sem aviso?
+                                <span class="wcag-ref">
+                                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/on-focus.html"
+                                        target="_blank">Entendendo o critério 3.2.1 - Nível
+                                        A <span class="visually-hidden">(abre em nova aba - Em Inglês)</span>
+                                        <svg class="external-link-icon" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                            <path
+                                                d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+                                            </path>
+                                        </svg>
+
+                                    </a></span>
+                            </legend>
+                            <div class="radio-group">
+                                <ul role="presentation">
+                                    <li><input type="radio" id="contexto-conforme" name="mudancas-contexto"
+                                            value="Conforme"><label for="contexto-conforme">Conforme</label></li>
+                                    <li><input type="radio" id="contexto-nao-conforme" name="mudancas-contexto"
+                                            value="Não Conforme"><label for="contexto-nao-conforme">Não Conforme</label>
+                                    </li>
+                                    <li><input type="radio" id="contexto-na" name="mudancas-contexto"
+                                            value="Não se Aplica"><label for="contexto-na">Não se Aplica</label></li>
+                                </ul>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <label for="obs-contexto">Observações (opcional):</label>
+                    <textarea id="obs-contexto" name="obs-contexto" rows="3"></textarea>
+                </article>
+                <article>
+                    <h3>4.4. Tempo e Conteúdos Automáticos</h3>
+                    <div class="verification-point" data-wcag-sc="2.2.2" data-wcag-level="A"
+                        data-wcag-name="Pausar, Parar, Ocultar"
+                        data-wcag-url="https://www.w3.org/WAI/WCAG22/Understanding/pause-stop-hide.html">
+                        <fieldset>
+                            <legend>Existe limite de tempo ou conteúdo em movimento automático sem controle de
+                                pausa/parada?
+                                <span class="wcag-ref">
+                                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/pause-stop-hide.html"
+                                        target="_blank">Entendendo o critério 2.2.2 - Nível
+                                        A <span class="visually-hidden">(abre em nova aba - Em Inglês)</span>
+                                        <svg class="external-link-icon" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                            <path
+                                                d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+                                            </path>
+                                        </svg>
+
+                                    </a></span>
+                            </legend>
+                            <div class="radio-group">
+                                <ul role="presentation">
+                                    <li><input type="radio" id="tempo-conforme" name="tempo-conteudo"
+                                            value="Conforme"><label for="tempo-conforme">Conforme</label></li>
+                                    <li><input type="radio" id="tempo-nao-conforme" name="tempo-conteudo"
+                                            value="Não Conforme"><label for="tempo-nao-conforme">Não Conforme</label>
+                                    </li>
+                                    <li><input type="radio" id="tempo-na" name="tempo-conteudo"
+                                            value="Não se Aplica"><label for="tempo-na">Não se Aplica</label></li>
+                                </ul>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <label for="obs-tempo">Observações (opcional):</label>
+                    <textarea id="obs-tempo" name="obs-tempo" rows="3"></textarea>
+                </article>
+                <article>
+                    <h3>4.5. Contraste de Cores</h3>
+                    <div class="verification-point" data-wcag-sc="1.4.3" data-wcag-level="AA"
+                        data-wcag-name="Contraste (Mínimo)"
+                        data-wcag-url="https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html">
+                        <fieldset>
+                            <legend>A verificação de contraste de cores foi realizada utilizando uma ferramenta
+                                apropriada e os resultados foram validados?"
+                                <span class="wcag-ref">
+                                    <a href="https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html"
+                                        target="_blank">Entendendo o critério 1.4.3 - Nível
+                                        AA <span class="visually-hidden">(abre em nova aba - Em Inglês)</span>
+                                        <svg class="external-link-icon" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                            <path
+                                                d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+                                            </path>
+                                        </svg>
+
+                                    </a></span>
+                            </legend>
+                            <div class="radio-group">
+                                <ul role="presentation">
+                                    <li><input type="radio" id="contraste-conforme" name="contraste"
+                                            value="Conforme"><label for="contraste-conforme">Conforme</label></li>
+                                    <li><input type="radio" id="contraste-nao-conforme" name="contraste"
+                                            value="Não Conforme"><label for="contraste-nao-conforme">Não
+                                            Conforme</label>
+                                    </li>
+                                    <li><input type="radio" id="contraste-na" name="contraste"
+                                            value="Não se Aplica"><label for="contraste-na">Não se Aplica</label></li>
+                                </ul>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <label for="obs-contraste">Observações (opcional):</label>
+                    <textarea id="obs-contraste" name="obs-contraste" rows="3"></textarea>
+                </article>
+                <article>
+                    <h3>4.6. Links de Atalho (<lang="en">Skip Link</lang>)</h3>
+                    <div class="verification-point" data-wcag-sc="2.4.1" data-wcag-level="A"
+                        data-wcag-name="Contornar Blocos"
+                        data-wcag-url="https://www.w3.org/WAI/WCAG22/Understanding/bypass-blocks.html">
+                        <fieldset>
+                            <legend>A página possui link para pular conteúdo repetitivo (<lang="en">skip-link</lang>)?
+                                    <span class="wcag-ref">
+                                        <a href="https://www.w3.org/WAI/WCAG22/Understanding/bypass-blocks.html"
+                                            target="_blank">Entendendo o critério 2.4.1 - Nível
+                                            A <span class="visually-hidden">(abre em nova aba - Em Inglês)</span>
+                                            <svg class="external-link-icon" aria-hidden="true"
+                                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                fill="currentColor">
+                                                <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                                <path
+                                                    d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z">
+                                                </path>
+                                            </svg>
+
+
+                                        </a></span>
+                            </legend>
+                            <div class="radio-group">
+                                <ul role="presentation">
+                                    <li><input type="radio" id="skip-link-conforme" name="skip-link"
+                                            value="Conforme"><label for="skip-link-conforme">Conforme</label></li>
+                                    <li><input type="radio" id="skip-link-nao-conforme" name="skip-link"
+                                            value="Não Conforme"><label for="skip-link-nao-conforme">Não
+                                            Conforme</label>
+                                    </li>
+                                    <li><input type="radio" id="skip-link-na" name="skip-link"
+                                            value="Não se Aplica"><label for="skip-link-na">Não se Aplica</label></li>
+                                </ul>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <label for="obs-skip">Observações (opcional):</label>
+                    <textarea id="obs-skip" name="obs-skip" rows="3"></textarea>
+                </article>
+            </section>
+
+
+            <div class="form-actions">
+                <button type="submit">Finalizar Inspeção</button>
+                <button type="button" id="clear-button">Limpar Formulário e Relatório</button>
+            </div>
+        </form>
+
+
+
+    </main>
+    <!-- Modal de confirmação -->
+    <div id="confirm-modal" class="modal modal--hidden" role="dialog" aria-modal="true" aria-labelledby="confirm-title"
+        aria-describedby="confirm-desc">
+        <div class="modal__content" role="document">
+            <button id="confirm-close" class="modal__close" aria-label="Fechar janela de confirmação">×</button>
+            <h2 id="confirm-title">Confirmar ação</h2>
+            <p id="confirm-desc">Tem certeza de que deseja limpar todos os campos preenchidos e o relatório gerado?</p>
+            <div class="modal__actions">
+                <button id="confirm-yes" type="button">Sim, limpar</button>
+                <button id="confirm-no" type="button">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <button id="backToTopBtn" aria-label="Voltar ao topo da página" title="Voltar ao topo">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF">
+            <path d="M0 0h24v24H0V0z" fill="none"></path>
+            <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6 1.41 1.41z"></path>
+        </svg>
+    </button>
+    <div id="report-output" aria-live="polite"></div>
+
+    <script src="scripts.js"></script>
+</body>
+
+</html>
